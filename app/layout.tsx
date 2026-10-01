@@ -22,7 +22,6 @@ export const metadata: Metadata = {
   openGraph: {
     title: `${SITE.name} | Plumber in Grantham`,
     description: SITE.tagline,
-    images: ["/logo.png"],
     type: "website",
   },
 };
