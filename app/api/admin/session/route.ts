@@ -24,7 +24,9 @@ export async function POST(req: Request) {
       maxAge: SESSION_MAX_AGE_MS / 1000,
     });
     return res;
-  } catch {
+  } catch (err) {
+    // Logged (never returned to the browser) so a failure can be diagnosed from the server logs.
+    console.error("Admin sign-in failed:", (err as { code?: string }).code ?? "", err instanceof Error ? err.message : err);
     return NextResponse.json({ error: "Sign-in failed. Please try again." }, { status: 401 });
   }
 }
