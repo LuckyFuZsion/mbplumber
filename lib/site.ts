@@ -1,6 +1,6 @@
 export const SITE = {
   name: "MB Plumber",
-  tagline: "Grantham Born. Grantham Trained. Grantham Trusted.",
+  tagline: "Bathroom fitting & plumbing in Grantham",
   phone: "07830 001306",
   phoneHref: "tel:+447830001306",
   email: "info@mbplumber.co.uk",
@@ -12,12 +12,21 @@ export const SITE = {
 export const NAV = [
   { href: "/", label: "Home" },
   { href: "/services", label: "Services" },
-  { href: "/reviews", label: "Reviews" },
+  { href: "/projects", label: "Projects" },
   { href: "/gallery", label: "Gallery" },
+  { href: "/reviews", label: "Reviews" },
   { href: "/contact", label: "Contact" },
 ];
 
 export const SERVICES = [
+  {
+    slug: "bathrooms",
+    icon: "bathrooms",
+    title: "Bathroom Fitting",
+    blurb:
+      "Full bathroom fit-outs and refreshes: showers, toilets, basins, baths and walk-in wet rooms, finished to a high standard.",
+    points: ["Complete bathroom installs", "Showers & wet rooms", "Toilets, baths & basins", "Heated towel rails"],
+  },
   {
     slug: "general-plumbing",
     icon: "general-plumbing",
@@ -43,14 +52,6 @@ export const SERVICES = [
     points: ["Kitchen sink fitting", "Basins & vanity units", "Waste & trap replacement", "Unblocking"],
   },
   {
-    slug: "bathrooms",
-    icon: "bathrooms",
-    title: "Bathrooms",
-    blurb:
-      "Full bathroom fit-outs and refreshes: showers, toilets, basins, baths and walk-in wet rooms, finished to a high standard.",
-    points: ["Complete bathroom installs", "Showers & wet rooms", "Toilets, baths & basins", "Heated towel rails"],
-  },
-  {
     slug: "boilers",
     icon: "heating",
     title: "Heating & Boiler-Related Work",
@@ -61,8 +62,8 @@ export const SERVICES = [
 ];
 
 export const WHY = [
-  { title: "20+ years experience", text: "Two decades on the tools, so we have seen it all and fixed it." },
-  { title: "Local to Grantham", text: "Trained here, working here. Your neighbour, not a call centre." },
+  { title: "20+ years experience", text: "Plenty of experience behind every job, so most problems are ones we have dealt with before." },
+  { title: "Local to Grantham", text: "Based in Grantham and the surrounding villages. A local plumber, not a call centre." },
   { title: "Clear, honest pricing", text: "You know the cost before we start. No nasty surprises." },
   { title: "Tidy, careful work", text: "We protect your home and leave it clean when we go." },
 ];

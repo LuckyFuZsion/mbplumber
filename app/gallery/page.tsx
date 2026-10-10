@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { CtaBand, PageHero } from "@/components/Bits";
 import { GalleryGrid, type GridItem } from "@/components/GalleryGrid";
 import { getGalleryItems } from "@/lib/cloudinary";
+import { allProjectGridItems } from "@/lib/projects";
 
 export const metadata: Metadata = {
   title: "Gallery",
@@ -11,16 +12,7 @@ export const metadata: Metadata = {
 export const revalidate = 60;
 
 // Shown only until the first photo is uploaded to Cloudinary (or if Cloudinary isn't configured yet).
-const FALLBACK: GridItem[] = [
-  {
-    id: "sample-bathroom",
-    url: "/sample-bathroom.webp",
-    width: 2000,
-    height: 1500,
-    caption: "Full bathroom fit-out with walk-in shower, double vanity and brushed brass fittings.",
-    category: "Bathrooms",
-  },
-];
+const FALLBACK: GridItem[] = allProjectGridItems();
 
 export default async function GalleryPage() {
   const live = await getGalleryItems();

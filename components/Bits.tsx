@@ -24,17 +24,17 @@ export function PageHero({ eyebrow, title, intro }: { eyebrow: string; title: st
 
 export function CtaBand() {
   return (
-    <section className="bg-brand text-black">
+    <section className="border-t border-white/10 bg-ink-soft">
       <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-6 px-4 py-12 text-center sm:px-6 md:flex-row md:text-left">
         <div>
-          <h2 className="heading text-3xl sm:text-4xl">Got a plumbing problem?</h2>
-          <p className="mt-2 font-semibold text-black/75">Call for a free, no-obligation quote. {SITE.area}.</p>
+          <h2 className="heading text-3xl sm:text-4xl">Planning a new bathroom?</h2>
+          <p className="mt-2 font-medium text-white/70">Call for a free, no-obligation quote. {SITE.area}.</p>
         </div>
         <div className="flex flex-col gap-3 sm:flex-row">
-          <a href={SITE.phoneHref} className="btn bg-black !text-brand hover:bg-neutral-900">
+          <a href={SITE.phoneHref} className="btn btn-yellow">
             <PhoneIcon className="h-5 w-5" /> {SITE.phone}
           </a>
-          <Link href="/contact" className="btn border-2 border-black text-black hover:bg-black/10">
+          <Link href="/contact" className="btn btn-ghost">
             <MailIcon className="h-5 w-5" /> Send a message
           </Link>
         </div>
