@@ -198,13 +198,6 @@ export default async function Home() {
               </div>
             ))}
           </div>
-          <p className="mt-5 text-sm text-white/55">
-            Gas work should always be carried out by a registered engineer. You can check any engineer on the{" "}
-            <a href="https://www.gassaferegister.co.uk/" target="_blank" rel="noopener noreferrer" className="font-semibold text-brand underline">
-              Gas Safe Register
-            </a>
-            .
-          </p>
         </section>
       )}
 
