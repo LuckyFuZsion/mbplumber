@@ -56,7 +56,7 @@ const ALL_PROJECTS: Project[] = [
       img("bathroom-3", 1, 1600, 1200, "Complete", "Bathroom with grey panelling and two heated towel rails"),
       img("bathroom-3", 2, 1200, 1600, "Complete", "Dark tiled shower with a recessed shower valve"),
       img("bathroom-3", 3, 1600, 1200, "Complete", "Slate-effect walk-in shower with a double vanity and brass taps"),
-      img("bathroom-3", 4, 1200, 1600, "Complete", "Slate-effect walk-in shower with a brass shower head"),
+      img("bathroom-3", 4, 1050, 1400, "Complete", "Slate-effect walk-in shower with a brass shower head"),
     ],
   },
   {
@@ -87,15 +87,15 @@ const ALL_PROJECTS: Project[] = [
 
 // Display order: strongest work first, as most visitors only look at the first few.
 const ORDER = ["bathroom-4", "bathroom-2", "bathroom-3", "bathroom-1", "bathroom-5"];
-export const PROJECTS: Project[] = ORDER.map((slug) => ALL_PROJECTS.find((p) => p.slug === slug)!);
+export const DEFAULT_PROJECTS: Project[] = ORDER.map((slug) => ALL_PROJECTS.find((p) => p.slug === slug)!);
 
-export const getProject = (slug: string) => PROJECTS.find((p) => p.slug === slug);
+export const getProject = (projects: Project[], slug: string) => projects.find((p) => p.slug === slug);
 
-export const projectCover = (p: Project) => p.images[p.cover];
+export const projectCover = (p: Project) => p.images[p.cover] ?? p.images[0];
 
 /** Every project photo as a gallery item (used until photos are uploaded through the admin panel). */
-export function allProjectGridItems(): GridItem[] {
-  return PROJECTS.flatMap((p) =>
+export function allProjectGridItems(projects: Project[]): GridItem[] {
+  return projects.flatMap((p) =>
     p.images.map((i, n) => ({
       id: `${p.slug}-${n}`,
       url: i.file,

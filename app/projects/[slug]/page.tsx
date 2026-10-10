@@ -3,30 +3,29 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { CtaBand, PageHero } from "@/components/Bits";
 import { GalleryGrid } from "@/components/GalleryGrid";
-import { getProject, PROJECTS, projectCover } from "@/lib/projects";
-
-export function generateStaticParams() {
-  return PROJECTS.map((p) => ({ slug: p.slug }));
-}
+import { getContent } from "@/lib/content-server";
+import { getProject, projectCover } from "@/lib/projects";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
-  const project = getProject(slug);
+  const project = getProject((await getContent()).projects.items, slug);
   if (!project) return {};
+  const cover = projectCover(project);
   return {
     title: project.title,
     description: project.summary,
-    openGraph: { images: [projectCover(project).file] },
+    ...(cover && { openGraph: { images: [cover.file] } }),
   };
 }
 
 export default async function ProjectPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const project = getProject(slug);
+  const all = (await getContent()).projects.items;
+  const project = getProject(all, slug);
   if (!project) notFound();
 
-  const index = PROJECTS.findIndex((p) => p.slug === project.slug);
-  const next = PROJECTS[(index + 1) % PROJECTS.length];
+  const index = all.findIndex((p) => p.slug === project.slug);
+  const next = all[(index + 1) % all.length];
 
   const items = project.images.map((i, n) => ({
     id: `${project.slug}-${n}`,

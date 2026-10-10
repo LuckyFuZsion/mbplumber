@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { SITE } from "@/lib/site";
+import { phoneHref } from "@/lib/content";
+import { getContent } from "@/lib/content-server";
 import { MailIcon, PhoneIcon } from "./Icons";
 
 export function PageHero({ eyebrow, title, intro }: { eyebrow: string; title: string; intro?: string }) {
@@ -22,17 +23,18 @@ export function PageHero({ eyebrow, title, intro }: { eyebrow: string; title: st
   );
 }
 
-export function CtaBand() {
+export async function CtaBand() {
+  const { cta, business } = await getContent();
   return (
     <section className="border-t border-white/10 bg-ink-soft">
       <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-6 px-4 py-12 text-center sm:px-6 md:flex-row md:text-left">
         <div>
-          <h2 className="heading text-3xl sm:text-4xl">Planning a new bathroom?</h2>
-          <p className="mt-2 font-medium text-white/70">Call for a free, no-obligation quote. {SITE.area}.</p>
+          <h2 className="heading text-3xl sm:text-4xl">{cta.heading}</h2>
+          <p className="mt-2 font-medium text-white/70">{cta.text} {business.area}.</p>
         </div>
         <div className="flex flex-col gap-3 sm:flex-row">
-          <a href={SITE.phoneHref} className="btn btn-yellow">
-            <PhoneIcon className="h-5 w-5" /> {SITE.phone}
+          <a href={phoneHref(business.phone)} className="btn btn-yellow">
+            <PhoneIcon className="h-5 w-5" /> {business.phone}
           </a>
           <Link href="/contact" className="btn btn-ghost">
             <MailIcon className="h-5 w-5" /> Send a message

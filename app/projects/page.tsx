@@ -1,25 +1,28 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { CtaBand, PageHero } from "@/components/Bits";
-import { PROJECTS, projectCover } from "@/lib/projects";
+import { getContent } from "@/lib/content-server";
+import { projectCover } from "@/lib/projects";
 
 export const metadata: Metadata = {
   title: "Projects",
   description: "Completed bathroom and plumbing work by MB Plumber in Grantham.",
 };
 
-export default function ProjectsPage() {
+export default async function ProjectsPage() {
+  const { projects } = await getContent();
   return (
     <>
       <PageHero
         eyebrow="Projects"
-        title="Completed work"
-        intro="A selection of recent jobs around Grantham. Open any one to see the full set of photos."
+        title={projects.title}
+        intro={projects.intro}
       />
       <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6">
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-          {PROJECTS.map((p) => {
+          {projects.items.map((p) => {
             const cover = projectCover(p);
+            if (!cover) return null;
             const hasBefore = p.images.some((i) => i.stage === "Before");
             return (
               <Link key={p.slug} href={`/projects/${p.slug}`} className="group block">

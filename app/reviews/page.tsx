@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { CtaBand, PageHero } from "@/components/Bits";
 import { CheckIcon, StarIcon } from "@/components/Icons";
-import { AGGREGATE_RATING, REVIEWS, REVIEW_LINK, SITE } from "@/lib/site";
+import type { ReviewItem } from "@/lib/content";
+import { getContent } from "@/lib/content-server";
+import { AGGREGATE_RATING, SITE } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Customer Reviews",
@@ -11,15 +13,14 @@ export const metadata: Metadata = {
 const fmt = (iso: string) =>
   new Date(iso).toLocaleDateString("en-GB", { month: "long", year: "numeric" });
 
-const sorted = [...REVIEWS].sort((a, b) => b.date.localeCompare(a.date));
-
-const jsonLd = {
+function buildJsonLd(sorted: ReviewItem[], phone: string) {
+  return {
   "@context": "https://schema.org",
   "@type": "Plumber",
   name: SITE.name,
   url: SITE.url,
   image: `${SITE.url}/logo.png`,
-  telephone: SITE.phone,
+  telephone: phone,
   ...(AGGREGATE_RATING && {
     aggregateRating: {
       "@type": "AggregateRating",
@@ -35,12 +36,16 @@ const jsonLd = {
     reviewBody: r.text,
     ...(r.rating && { reviewRating: { "@type": "Rating", ratingValue: r.rating, bestRating: 5 } }),
   })),
-};
+  };
+}
 
-export default function ReviewsPage() {
+export default async function ReviewsPage() {
+  const { reviews, business } = await getContent();
+  const sorted = [...reviews.items].sort((a, b) => b.date.localeCompare(a.date));
+  const jsonLd = buildJsonLd(sorted, business.phone);
   return (
     <>
-      <PageHero eyebrow="Reviews" title="What our customers say" intro="Honest feedback from people we've worked for around Grantham." />
+      <PageHero eyebrow="Reviews" title={reviews.title} intro={reviews.intro} />
       <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6">
         {sorted.length === 0 ? (
           <div className="mx-auto max-w-xl rounded-3xl border border-dashed border-white/20 p-10 text-center">
@@ -72,9 +77,9 @@ export default function ReviewsPage() {
                 </figure>
               ))}
             </div>
-            {REVIEW_LINK && (
+            {reviews.link && (
               <div className="mt-12 text-center">
-                <a href={REVIEW_LINK} target="_blank" rel="noopener noreferrer" className="btn btn-ghost">
+                <a href={reviews.link} target="_blank" rel="noopener noreferrer" className="btn btn-ghost">
                   Read more or leave a review on Facebook
                 </a>
               </div>

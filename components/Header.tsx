@@ -3,10 +3,10 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import { NAV, SITE } from "@/lib/site";
+import { NAV } from "@/lib/site";
 import { CloseIcon, MenuIcon, PhoneIcon } from "./Icons";
 
-export function Header() {
+export function Header({ phone, phoneLink }: { phone: string; phoneLink: string }) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
 
@@ -41,9 +41,9 @@ export function Header() {
         </nav>
 
         <div className="flex items-center gap-2">
-          <a href={SITE.phoneHref} className="btn btn-red !px-4 !py-2.5 text-sm sm:!px-5">
+          <a href={phoneLink} className="btn btn-red !px-4 !py-2.5 text-sm sm:!px-5">
             <PhoneIcon className="h-4 w-4" />
-            <span className="hidden sm:inline">{SITE.phone}</span>
+            <span className="hidden sm:inline">{phone}</span>
             <span className="sm:hidden">Call</span>
           </a>
           <button

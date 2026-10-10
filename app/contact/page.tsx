@@ -2,22 +2,27 @@ import type { Metadata } from "next";
 import { PageHero } from "@/components/Bits";
 import { ContactForm } from "@/components/ContactForm";
 import { MailIcon, PhoneIcon, PinIcon } from "@/components/Icons";
-import { SITE } from "@/lib/site";
+import { phoneHref } from "@/lib/content";
+import { getContent } from "@/lib/content-server";
 
-export const metadata: Metadata = {
-  title: "Contact",
-  description: "Call 07830 001306 or email info@mbplumber.co.uk for a free plumbing quote in Grantham.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const { business } = await getContent();
+  return {
+    title: "Contact",
+    description: `Call ${business.phone} or email ${business.email} for a free plumbing quote in Grantham.`,
+  };
+}
 
-export default function ContactPage() {
+export default async function ContactPage() {
+  const { business, contact, services } = await getContent();
   const cards = [
-    { Icon: PhoneIcon, label: "Call us", value: SITE.phone, href: SITE.phoneHref },
-    { Icon: MailIcon, label: "Email", value: SITE.email, href: `mailto:${SITE.email}` },
-    { Icon: PinIcon, label: "Covering", value: SITE.area, href: undefined },
+    { Icon: PhoneIcon, label: "Call us", value: business.phone, href: phoneHref(business.phone) },
+    { Icon: MailIcon, label: "Email", value: business.email, href: `mailto:${business.email}` },
+    { Icon: PinIcon, label: "Covering", value: business.area, href: undefined },
   ];
   return (
     <>
-      <PageHero eyebrow="Contact" title="Let's get it sorted" intro="Call, email or send a message below. Free quotes, and we'll get back to you quickly." />
+      <PageHero eyebrow="Contact" title={contact.title} intro={contact.intro} />
       <section className="mx-auto grid max-w-7xl gap-10 px-4 py-16 sm:px-6 lg:grid-cols-[1fr_1.2fr]">
         <div className="space-y-4">
           {cards.map(({ Icon, label, value, href }) => {
@@ -44,10 +49,10 @@ export default function ContactPage() {
             );
           })}
           <p className="px-1 pt-2 text-sm font-medium text-white/60">
-            {SITE.yearsExperience} years of plumbing experience. {SITE.tagline}
+            {business.yearsExperience} years of plumbing experience. {business.tagline}
           </p>
         </div>
-        <ContactForm />
+        <ContactForm email={business.email} phone={business.phone} services={services.items.map((s) => s.title)} />
       </section>
     </>
   );

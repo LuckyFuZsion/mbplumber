@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { CtaBand, PageHero } from "@/components/Bits";
 import { CheckIcon, ServiceIcon } from "@/components/Icons";
-import { SERVICES } from "@/lib/site";
+import { getContent } from "@/lib/content-server";
 
 export const metadata: Metadata = {
   title: "Plumbing Services",
@@ -9,16 +9,17 @@ export const metadata: Metadata = {
     "General plumbing, taps, sinks, bathroom installations and some boiler work in Grantham and surrounding villages.",
 };
 
-export default function ServicesPage() {
+export default async function ServicesPage() {
+  const { services } = await getContent();
   return (
     <>
       <PageHero
         eyebrow="Services"
-        title="Everything plumbing, under one roof"
-        intro="Whatever the job, you get 20+ years of know-how and a straight answer on cost before we start."
+        title={services.title}
+        intro={services.intro}
       />
       <section className="mx-auto max-w-7xl space-y-6 px-4 py-16 sm:px-6">
-        {SERVICES.map((s, i) => {
+        {services.items.map((s, i) => {
           return (
             <article
               id={s.slug}

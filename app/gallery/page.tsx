@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { CtaBand, PageHero } from "@/components/Bits";
 import { GalleryGrid, type GridItem } from "@/components/GalleryGrid";
 import { getGalleryItems } from "@/lib/cloudinary";
+import { getContent } from "@/lib/content-server";
 import { allProjectGridItems } from "@/lib/projects";
 
 export const metadata: Metadata = {
@@ -11,12 +12,11 @@ export const metadata: Metadata = {
 
 export const revalidate = 60;
 
-// Shown only until the first photo is uploaded to Cloudinary (or if Cloudinary isn't configured yet).
-const FALLBACK: GridItem[] = allProjectGridItems();
-
+// Until photos are uploaded to the Cloudinary gallery, show the project photos.
 export default async function GalleryPage() {
   const live = await getGalleryItems();
-  const items: GridItem[] = live.length ? live : FALLBACK;
+  const { projects } = await getContent();
+  const items: GridItem[] = live.length ? live : allProjectGridItems(projects.items);
 
   return (
     <>

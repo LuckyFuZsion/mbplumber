@@ -1,13 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { SERVICES, SITE } from "@/lib/site";
 
 const field =
   "w-full rounded-xl border border-white/20 bg-black px-4 py-3 font-medium text-white placeholder:text-white/40 focus:border-brand focus:outline-none";
 
 /** Opens the visitor's email app pre-filled. No backend or email service needed. */
-export function ContactForm() {
+export function ContactForm({ email, phone, services }: { email: string; phone: string; services: string[] }) {
   const [sent, setSent] = useState(false);
 
   function submit(e: React.FormEvent<HTMLFormElement>) {
@@ -21,7 +20,7 @@ export function ContactForm() {
       "",
       `${f.get("message")}`,
     ].join("\n");
-    window.location.href = `mailto:${SITE.email}?subject=${encodeURIComponent(
+    window.location.href = `mailto:${email}?subject=${encodeURIComponent(
       `Website enquiry from ${f.get("name")}`,
     )}&body=${encodeURIComponent(body)}`;
     setSent(true);
@@ -47,8 +46,8 @@ export function ContactForm() {
         <label className="block text-sm font-bold">
           Service
           <select name="service" className={`${field} mt-1.5`}>
-            {SERVICES.map((s) => (
-              <option key={s.slug}>{s.title}</option>
+            {services.map((title) => (
+              <option key={title}>{title}</option>
             ))}
             <option>Something else</option>
           </select>
@@ -61,7 +60,7 @@ export function ContactForm() {
       <button className="btn btn-red w-full text-lg">Send enquiry</button>
       {sent && (
         <p className="text-center text-sm font-semibold text-white/70">
-          Your email app should have opened. If not, email us at {SITE.email} or call {SITE.phone}.
+          Your email app should have opened. If not, email us at {email} or call {phone}.
         </p>
       )}
     </form>

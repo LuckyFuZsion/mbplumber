@@ -1,32 +1,24 @@
 import "server-only";
-import { createHmac, timingSafeEqual } from "node:crypto";
 import { cookies } from "next/headers";
+import { adminAuth, allowedAdminEmails, firebaseConfigured } from "./firebase-admin";
 
-export const ADMIN_COOKIE = "mbp_admin";
+export const SESSION_COOKIE = "mbp_session";
+export const SESSION_MAX_AGE_MS = 1000 * 60 * 60 * 24 * 5; // 5 days
 
-function token() {
-  const pw = process.env.ADMIN_PASSWORD;
-  if (!pw) return null;
-  return createHmac("sha256", process.env.ADMIN_SESSION_SECRET ?? "mbp-admin").update(pw).digest("hex");
-}
-
-export function passwordMatches(input: string) {
-  const pw = process.env.ADMIN_PASSWORD;
-  if (!pw) return false;
-  const a = Buffer.from(input);
-  const b = Buffer.from(pw);
-  return a.length === b.length && timingSafeEqual(a, b);
-}
-
-export function sessionToken() {
-  return token();
+/** The signed-in admin's email, or null. Verifies the Firebase session cookie and the allow-list. */
+export async function adminEmail(): Promise<string | null> {
+  if (!firebaseConfigured()) return null;
+  const cookie = (await cookies()).get(SESSION_COOKIE)?.value;
+  if (!cookie) return null;
+  try {
+    const decoded = await adminAuth().verifySessionCookie(cookie, true);
+    const email = decoded.email?.toLowerCase();
+    return email && allowedAdminEmails().includes(email) ? email : null;
+  } catch {
+    return null;
+  }
 }
 
 export async function isAdmin() {
-  const expected = token();
-  if (!expected) return false;
-  const got = (await cookies()).get(ADMIN_COOKIE)?.value ?? "";
-  const a = Buffer.from(got);
-  const b = Buffer.from(expected);
-  return a.length === b.length && timingSafeEqual(a, b);
+  return (await adminEmail()) !== null;
 }

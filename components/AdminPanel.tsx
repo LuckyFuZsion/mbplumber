@@ -4,49 +4,15 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { GALLERY_CATEGORIES } from "@/lib/site";
 import { cldUrl } from "@/lib/img";
+import { useConfirm } from "./admin/Confirm";
 import type { GridItem } from "./GalleryGrid";
 
 const field =
   "w-full rounded-lg border border-white/20 bg-black px-3 py-2.5 text-sm font-medium text-white placeholder:text-white/40 focus:border-brand focus:outline-none";
 
-export function AdminLogin() {
-  const router = useRouter();
-  const [pw, setPw] = useState("");
-  const [err, setErr] = useState("");
-  const [busy, setBusy] = useState(false);
-
-  async function submit(e: React.FormEvent) {
-    e.preventDefault();
-    setBusy(true);
-    setErr("");
-    const res = await fetch("/api/admin/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ password: pw }),
-    });
-    setBusy(false);
-    if (res.ok) router.refresh();
-    else setErr((await res.json().catch(() => ({}))).error ?? "Login failed.");
-  }
-
-  return (
-    <form onSubmit={submit} className="rounded-2xl border border-white/10 bg-ink-soft p-8">
-      <h1 className="heading mb-6 text-3xl">Gallery admin</h1>
-      <label className="mb-2 block text-sm font-bold" htmlFor="pw">
-        Password
-      </label>
-      <input id="pw" type="password" className={field} value={pw} onChange={(e) => setPw(e.target.value)} autoFocus />
-      {err && <p className="mt-3 text-sm font-semibold text-brand-red">{err}</p>}
-      <button className="btn btn-yellow mt-6 w-full" disabled={busy || !pw}>
-        {busy ? "Signing in…" : "Sign in"}
-      </button>
-    </form>
-  );
-}
-
 type Draft = { file: File; preview: string; caption: string; category: string; status: "ready" | "uploading" | "done" | "error" };
 
-export function AdminPanel({ items, configured }: { items: (GridItem & { createdAt?: string })[]; configured: boolean }) {
+export function GalleryAdmin({ items, configured }: { items: (GridItem & { createdAt?: string })[]; configured: boolean }) {
   const router = useRouter();
   const [drafts, setDrafts] = useState<Draft[]>([]);
   const [msg, setMsg] = useState("");
@@ -98,29 +64,16 @@ export function AdminPanel({ items, configured }: { items: (GridItem & { created
     router.refresh();
   }
 
-  async function logout() {
-    await fetch("/api/admin/logout", { method: "POST" });
-    router.refresh();
-  }
-
   return (
     <div>
-      <div className="mb-8 flex items-center justify-between gap-4">
-        <h1 className="heading text-3xl sm:text-4xl">Gallery admin</h1>
-        <button onClick={logout} className="btn btn-ghost !py-2 text-sm">
-          Sign out
-        </button>
-      </div>
-
       {!configured && (
         <p className="mb-8 rounded-xl border border-brand-red bg-brand-red/10 p-4 text-sm font-semibold">
-          Cloudinary isn&apos;t configured yet. Add CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY and CLOUDINARY_API_SECRET to
-          .env.local and restart.
+          Photo uploads aren&apos;t set up yet (Cloudinary settings are missing).
         </p>
       )}
 
       <div className="mb-12 rounded-2xl border border-white/10 bg-ink-soft p-6">
-        <h2 className="mb-1 text-xl font-extrabold">Add photos</h2>
+        <h2 className="mb-1 text-xl font-extrabold">Add gallery photos</h2>
         <p className="mb-4 text-sm text-white/60">Choose one or more photos, add a caption to each, then upload.</p>
         <input
           type="file"
@@ -184,6 +137,7 @@ function ExistingPhoto({ item }: { item: GridItem }) {
   const [caption, setCaption] = useState(item.caption);
   const [category, setCategory] = useState(item.category);
   const [busy, setBusy] = useState(false);
+  const ask = useConfirm();
   const dirty = caption !== item.caption || category !== item.category;
 
   async function save() {
@@ -197,7 +151,14 @@ function ExistingPhoto({ item }: { item: GridItem }) {
     router.refresh();
   }
   async function remove() {
-    if (!confirm("Delete this photo permanently?")) return;
+    const yes = await ask({
+      title: "Delete this gallery photo?",
+      name: item.caption || "Photo with no caption",
+      detail: `Category: ${item.category}`,
+      image: cldUrl(item.url, 160),
+      message: "It is permanently deleted from the gallery and from photo storage. This cannot be undone.",
+    });
+    if (!yes) return;
     setBusy(true);
     await fetch("/api/admin/photo", {
       method: "DELETE",
