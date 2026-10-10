@@ -33,7 +33,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
     url: i.file,
     width: i.width,
     height: i.height,
-    caption: i.stage === "Finished" ? project.title : `${project.title} – ${i.stage.toLowerCase()}`,
+    caption: i.stage === "Complete" ? project.title : `${project.title} – ${i.stage.toLowerCase()}`,
     category: i.stage,
   }));
 

@@ -1,6 +1,6 @@
 import type { GridItem } from "@/components/GalleryGrid";
 
-export type ProjectImage = { file: string; width: number; height: number; stage: "Before" | "After" | "Finished"; alt: string };
+export type ProjectImage = { file: string; width: number; height: number; stage: "Before" | "After" | "Complete"; alt: string };
 
 export type Project = {
   slug: string;
@@ -21,7 +21,7 @@ const img = (slug: string, n: number, width: number, height: number, stage: Proj
   alt,
 });
 
-export const PROJECTS: Project[] = [
+const ALL_PROJECTS: Project[] = [
   {
     slug: "bathroom-1",
     title: "Bathroom 1",
@@ -53,10 +53,10 @@ export const PROJECTS: Project[] = [
     summary: "A slate-effect tiled walk-in shower with brass fittings, a glass screen and a double vanity.",
     cover: 2,
     images: [
-      img("bathroom-3", 1, 1600, 1200, "Finished", "Bathroom with grey panelling and two heated towel rails"),
-      img("bathroom-3", 2, 1200, 1600, "Finished", "Dark tiled shower with a recessed shower valve"),
-      img("bathroom-3", 3, 1600, 1200, "Finished", "Slate-effect walk-in shower with a double vanity and brass taps"),
-      img("bathroom-3", 4, 1200, 1600, "Finished", "Slate-effect walk-in shower with a brass shower head"),
+      img("bathroom-3", 1, 1600, 1200, "Complete", "Bathroom with grey panelling and two heated towel rails"),
+      img("bathroom-3", 2, 1200, 1600, "Complete", "Dark tiled shower with a recessed shower valve"),
+      img("bathroom-3", 3, 1600, 1200, "Complete", "Slate-effect walk-in shower with a double vanity and brass taps"),
+      img("bathroom-3", 4, 1200, 1600, "Complete", "Slate-effect walk-in shower with a brass shower head"),
     ],
   },
   {
@@ -65,10 +65,10 @@ export const PROJECTS: Project[] = [
     summary: "An older bathroom suite replaced with a modern walk-in shower, a fitted vanity and a wood-effect floor.",
     cover: 2,
     images: [
-      img("bathroom-4", 1, 1600, 900, "Before", "Old bathroom suite before the refit"),
-      img("bathroom-4", 2, 1600, 900, "Before", "Old basin and tiled walls before the refit"),
-      img("bathroom-4", 3, 900, 1600, "After", "Finished bathroom with a walk-in shower and wood-effect floor"),
-      img("bathroom-4", 4, 900, 1600, "After", "Shower with a recessed shelf and brass shower head"),
+      img("bathroom-4", 1, 1600, 900, "Complete", "Old bathroom suite before the refit"),
+      img("bathroom-4", 2, 1600, 900, "Complete", "Old basin and tiled walls before the refit"),
+      img("bathroom-4", 3, 900, 1600, "Complete", "Finished bathroom with a walk-in shower and wood-effect floor"),
+      img("bathroom-4", 4, 900, 1600, "Complete", "Shower with a recessed shelf and brass shower head"),
     ],
   },
   {
@@ -77,13 +77,17 @@ export const PROJECTS: Project[] = [
     summary: "A quadrant shower enclosure, a heated towel rail and shutters, finished in tile-effect wall panels.",
     cover: 0,
     images: [
-      img("bathroom-5", 1, 1200, 1600, "Finished", "Quadrant shower enclosure with dark tile-effect panels"),
-      img("bathroom-5", 2, 1200, 1600, "Finished", "Bathroom with a heated towel rail and a curved shower enclosure"),
-      img("bathroom-5", 3, 1200, 1600, "Finished", "Quadrant shower with a blue panelled wall and shutters"),
-      img("bathroom-5", 4, 1200, 1600, "Finished", "Bathroom with a brass towel rail and shuttered window"),
+      img("bathroom-5", 1, 1200, 1600, "Complete", "Quadrant shower enclosure with dark tile-effect panels"),
+      img("bathroom-5", 2, 1200, 1600, "Complete", "Bathroom with a heated towel rail and a curved shower enclosure"),
+      img("bathroom-5", 3, 1200, 1600, "Complete", "Quadrant shower with a blue panelled wall and shutters"),
+      img("bathroom-5", 4, 1200, 1600, "Complete", "Bathroom with a brass towel rail and shuttered window"),
     ],
   },
 ];
+
+// Display order: strongest work first, as most visitors only look at the first few.
+const ORDER = ["bathroom-4", "bathroom-2", "bathroom-3", "bathroom-1", "bathroom-5"];
+export const PROJECTS: Project[] = ORDER.map((slug) => ALL_PROJECTS.find((p) => p.slug === slug)!);
 
 export const getProject = (slug: string) => PROJECTS.find((p) => p.slug === slug);
 
@@ -97,7 +101,7 @@ export function allProjectGridItems(): GridItem[] {
       url: i.file,
       width: i.width,
       height: i.height,
-      caption: `${p.title}${i.stage === "Finished" ? "" : ` – ${i.stage.toLowerCase()}`}`,
+      caption: `${p.title}${i.stage === "Complete" ? "" : ` – ${i.stage.toLowerCase()}`}`,
       category: "Bathrooms",
     })),
   );

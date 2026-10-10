@@ -5,7 +5,7 @@ import { PROJECTS, projectCover } from "@/lib/projects";
 
 export const metadata: Metadata = {
   title: "Projects",
-  description: "Bathroom fitting projects completed by MB Plumber in Grantham, with before and after photos.",
+  description: "Completed bathroom and plumbing work by MB Plumber in Grantham.",
 };
 
 export default function ProjectsPage() {
@@ -13,8 +13,8 @@ export default function ProjectsPage() {
     <>
       <PageHero
         eyebrow="Projects"
-        title="Bathrooms we have fitted"
-        intro="A selection of recent bathroom projects around Grantham. Open any one to see the full set of photos."
+        title="Completed work"
+        intro="A selection of recent jobs around Grantham. Open any one to see the full set of photos."
       />
       <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6">
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">

@@ -59,7 +59,7 @@ export const SERVICES = [
     icon: "heating",
     title: "Heating & Boiler-Related Work",
     blurb:
-      "Radiators, heating pipework and the water side of your heating system. Any work on the gas boiler itself is handled by a Gas Safe registered engineer, and we will tell you straight which is which.",
+      "Radiators, heating pipework and the water side of your heating system. Any work on the gas boiler itself is handled by a Gas Safe registered engineer.",
     points: ["Radiators: fit, swap & bleed", "Heating pipework", "Radiator valves & TRVs", "Honest advice on your system"],
   },
 ];
@@ -68,7 +68,7 @@ export const WHY = [
   { title: "20+ years experience", text: "Plenty of experience behind every job, so most problems are ones we have dealt with before." },
   { title: "Local to Grantham", text: "Based in Grantham and the surrounding villages. A local plumber, not a call centre." },
   { title: "Clear, honest pricing", text: "You know the cost before we start. No nasty surprises." },
-  { title: "Tidy, careful work", text: "We protect your home and leave it clean when we go." },
+  { title: "Respectful of your home", text: "We take care to protect your home, and leave it clean when we go." },
 ];
 
 // Add real customer reviews here (Google, Facebook, MyBuilder, etc.).

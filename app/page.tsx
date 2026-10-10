@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { CtaBand } from "@/components/Bits";
 import { CheckIcon, PhoneIcon, ServiceIcon, ShieldIcon } from "@/components/Icons";
-import { PROJECTS, projectCover } from "@/lib/projects";
+import { getProject, PROJECTS, projectCover } from "@/lib/projects";
 import { SERVICES, SITE, WHY } from "@/lib/site";
 
 export default function Home() {
@@ -16,8 +16,7 @@ export default function Home() {
               Bathroom fitting and plumbing in Grantham
             </h1>
             <p className="fade-up mt-6 max-w-xl text-lg leading-relaxed text-white/75" style={{ animationDelay: "160ms" }}>
-              {SITE.yearsExperience} years of experience. From full bathroom fit-outs to the smaller jobs, you get an
-              honest local plumber who turns up on time and does the job properly.
+              With over {SITE.yearsExperience} years of experience, we take care of everything from complete bathroom installations to smaller plumbing repairs. Every job is completed with care and attention to detail, from the first visit to the finishing touches.
             </p>
             <div className="fade-up mt-9 flex flex-col gap-3 sm:flex-row" style={{ animationDelay: "240ms" }}>
               <Link href="/projects" className="btn btn-yellow">
@@ -32,10 +31,10 @@ export default function Home() {
           <div className="fade-up relative mx-auto w-full max-w-xl" style={{ animationDelay: "200ms" }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src={projectCover(PROJECTS[2]).file}
-              alt={projectCover(PROJECTS[2]).alt}
-              width={projectCover(PROJECTS[2]).width}
-              height={projectCover(PROJECTS[2]).height}
+              src={projectCover(getProject("bathroom-3")!).file}
+              alt={projectCover(getProject("bathroom-3")!).alt}
+              width={projectCover(getProject("bathroom-3")!).width}
+              height={projectCover(getProject("bathroom-3")!).height}
               className="aspect-[4/3] w-full rounded-2xl border border-white/10 object-cover"
             />
           </div>
@@ -49,7 +48,7 @@ export default function Home() {
             [`${SITE.yearsExperience}`, "Years experience"],
             ["Local", "Grantham based"],
             ["Free", "No-obligation quotes"],
-            ["Tidy", "Clean, careful work"],
+            ["Respectful", "We take care to protect your home"],
           ].map(([big, small]) => (
             <div key={small}>
               <div className="text-2xl font-bold sm:text-3xl">{big}</div>
@@ -64,7 +63,7 @@ export default function Home() {
         <div className="mb-10 flex flex-wrap items-end justify-between gap-4">
           <div>
             <p className="eyebrow mb-3">Recent work</p>
-            <h2 className="heading max-w-2xl text-3xl sm:text-4xl">Bathrooms we have fitted</h2>
+            <h2 className="heading max-w-2xl text-3xl sm:text-4xl">Completed work</h2>
           </div>
           <Link href="/projects" className="btn btn-ghost">
             All projects →
@@ -126,8 +125,8 @@ export default function Home() {
           <div className="relative">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src={projectCover(PROJECTS[1]).file}
-              alt={projectCover(PROJECTS[1]).alt}
+              src={projectCover(getProject("bathroom-2")!).file}
+              alt={projectCover(getProject("bathroom-2")!).alt}
               className="relative aspect-[4/3] w-full rounded-3xl object-cover"
             />
           </div>
