@@ -7,15 +7,16 @@ import type { GridItem } from "../GalleryGrid";
 import { ConfirmProvider, useConfirm } from "./Confirm";
 import { HistoryPanel } from "./HistoryPanel";
 import { ProjectsEditor } from "./ProjectsEditor";
-import { BusinessEditor, HomeEditor, OtherTextEditors, ReviewsEditor, ServicesEditor } from "./TextEditors";
+import { BusinessEditor, FaqEditor, HomeEditor, OtherTextEditors, ReviewsEditor, ServicesEditor } from "./TextEditors";
 
-const TABS = ["projects", "home", "services", "reviews", "business", "other", "gallery", "history"] as const;
+const TABS = ["projects", "home", "services", "reviews", "faq", "business", "other", "gallery", "history"] as const;
 type Tab = (typeof TABS)[number];
 const TAB_LABEL: Record<Tab, string> = {
   projects: "Projects",
   home: "Home page",
   services: "Services",
   reviews: "Reviews",
+  faq: "FAQs",
   business: "Business",
   other: "Contact & banner",
   gallery: "Gallery",
@@ -118,6 +119,7 @@ function AdminAppInner({
       {tab === "home" && <HomeEditor value={content.home} customised={c("home")} />}
       {tab === "services" && <ServicesEditor value={content.services} customised={c("services")} />}
       {tab === "reviews" && <ReviewsEditor value={content.reviews} customised={c("reviews")} />}
+      {tab === "faq" && <FaqEditor value={content.faq} customised={c("faq")} />}
       {tab === "business" && <BusinessEditor value={content.business} customised={c("business")} />}
       {tab === "other" && <OtherTextEditors contact={content.contact} cta={content.cta} customised={customised} />}
       {tab === "gallery" && <GalleryAdmin items={gallery} configured={cloudinary} />}

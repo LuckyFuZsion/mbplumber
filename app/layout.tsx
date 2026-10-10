@@ -3,7 +3,7 @@ import { Montserrat } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
-import { getContent } from "@/lib/content-server";
+import { getContent, getLastUpdated } from "@/lib/content-server";
 import { phoneHref } from "@/lib/content";
 import { SITE } from "@/lib/site";
 
@@ -17,6 +17,11 @@ export async function generateMetadata(): Promise<Metadata> {
   const { business } = await getContent();
   return {
     metadataBase: new URL(SITE.url),
+    // "./" resolves to each page's own address, so every page gets its own canonical tag.
+    alternates: { canonical: "./" },
+    authors: [{ name: SITE.name, url: SITE.url }],
+    creator: SITE.name,
+    publisher: SITE.name,
     title: {
       default: `${SITE.name} | Plumber in Grantham, Lincolnshire`,
       template: `%s | ${SITE.name} Grantham`,
@@ -31,11 +36,15 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function RootLayout({ children }: LayoutProps<"/">) {
-  const { business } = await getContent();
+  const [{ business }, updated] = await Promise.all([getContent(), getLastUpdated()]);
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Plumber",
+    "@id": `${SITE.url}/#business`,
     name: SITE.name,
+    description: business.tagline,
+    sameAs: SITE.social,
+    dateModified: updated,
     telephone: business.phone,
     email: business.email,
     url: SITE.url,

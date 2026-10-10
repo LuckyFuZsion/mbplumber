@@ -31,10 +31,11 @@ export type SiteContent = {
   projects: { title: string; intro: string; items: Project[] };
   contact: { title: string; intro: string };
   cta: { heading: string; text: string };
+  faq: { heading: string; items: { q: string; a: string }[] };
 };
 
 export type SectionKey = keyof SiteContent;
-export const SECTION_KEYS: SectionKey[] = ["business", "home", "services", "reviews", "projects", "contact", "cta"];
+export const SECTION_KEYS: SectionKey[] = ["business", "home", "services", "reviews", "projects", "contact", "cta", "faq"];
 
 export const SECTION_LABELS: Record<SectionKey, string> = {
   business: "Business details",
@@ -44,6 +45,7 @@ export const SECTION_LABELS: Record<SectionKey, string> = {
   projects: "Projects",
   contact: "Contact page",
   cta: "Bottom banner",
+  faq: "FAQs",
 };
 
 export const SERVICE_ICONS = ["bathrooms", "general-plumbing", "taps", "sinks", "heating"] as const;
@@ -98,6 +100,32 @@ export const DEFAULT_CONTENT: SiteContent = {
   cta: {
     heading: "Planning a new bathroom?",
     text: "Call for a free, no-obligation quote.",
+  },
+  // Plain-English answers (40-80 words each suits search "answer boxes"). Only facts already on the site.
+  faq: {
+    heading: "Frequently asked questions",
+    items: [
+      {
+        q: "What areas do you cover?",
+        a: "MB Plumber is based in Grantham and covers the surrounding villages. If you are not sure whether we can reach you, just give us a call or send a message through the contact page and we will let you know. We are always happy to talk through your job over the phone before arranging anything.",
+      },
+      {
+        q: "What bathroom work do you do?",
+        a: "Bathroom fitting is our main service, from complete bathroom installations to smaller updates such as a new shower, toilet, basin or heated towel rail. Every job is completed with care and attention to detail, from the first visit to the finishing touches. You can see examples of finished bathrooms, including before and after photos, on our completed work page.",
+      },
+      {
+        q: "Can you work on my boiler?",
+        a: "We carry out radiators, heating pipework and the water side of your heating system. We do not carry out work on the gas boiler itself, which must be done by a Gas Safe registered engineer. You can check any engineer's registration on the Gas Safe Register website before they start, so you know exactly who is working in your home.",
+      },
+      {
+        q: "How do I get a quote?",
+        a: "We offer free, no-obligation quotes. Call us or send a message through the contact page, tell us what you need, and we will talk you through it. You will know the cost before we start, so there are no surprises when the job is finished. Photos of the room can help if you have them.",
+      },
+      {
+        q: "How do you protect my home during a job?",
+        a: "We take care to protect your home and leave it clean when we go. Being respectful of your property is part of every job, whether it is a small repair or a full bathroom installation. If you have any particular concerns about access, pets or children, mention them when you get in touch and we will take them into account.",
+      },
+    ],
   },
 };
 

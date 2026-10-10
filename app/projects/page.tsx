@@ -30,7 +30,7 @@ export default async function ProjectsPage() {
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={cover.file}
-                    alt={cover.alt}
+                    alt={cover.alt || `${p.title}, completed bathroom project by MB Plumber`}
                     width={cover.width}
                     height={cover.height}
                     loading="lazy"

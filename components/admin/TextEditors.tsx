@@ -248,3 +248,61 @@ export function OtherTextEditors({ contact, cta, customised }: { contact: SiteCo
     </div>
   );
 }
+
+const wordCount = (t: string) => t.trim().split(/\s+/).filter(Boolean).length;
+
+export function FaqEditor({ value, customised }: Props<"faq">) {
+  const ed = useSectionEditor("faq", value, customised);
+  const ask = useConfirm();
+  const d = ed.draft;
+  const set = (p: Partial<typeof d>) => ed.setDraft({ ...d, ...p });
+  return (
+    <SectionShell
+      title="FAQs"
+      help="Questions customers often ask, shown on the home page. They also help the site appear in Google's answer boxes and in AI assistants. Aim for 40 to 80 words per answer and write the question the way a customer would ask it."
+      editor={ed}
+    >
+      <Field label="Section heading" value={d.heading} onChange={(v) => set({ heading: v })} />
+      <div className="space-y-4">
+        {d.items.map((f, i) => {
+          const n = wordCount(f.a);
+          return (
+            <Card
+              key={i}
+              actions={
+                <>
+                  <MiniButton onClick={() => set({ items: move(d.items, i, -1) })} disabled={i === 0}>↑ Up</MiniButton>
+                  <MiniButton onClick={() => set({ items: move(d.items, i, 1) })} disabled={i === d.items.length - 1}>↓ Down</MiniButton>
+                  <MiniButton
+                    danger
+                    onClick={async () =>
+                      (await ask({
+                        title: "Delete this question?",
+                        name: f.q || "Empty question",
+                        detail: "FAQs on the home page",
+                        message: "It disappears from the site once you press Save changes.",
+                      })) && set({ items: removeAt(d.items, i) })
+                    }
+                  >
+                    Remove
+                  </MiniButton>
+                </>
+              }
+            >
+              <Field label="Question" value={f.q} onChange={(v) => set({ items: setAt(d.items, i, { q: v }) })} placeholder="e.g. What areas do you cover?" />
+              <Field
+                label="Answer"
+                value={f.a}
+                onChange={(v) => set({ items: setAt(d.items, i, { a: v }) })}
+                textarea
+                rows={4}
+                hint={`${n} words${n < 40 ? " (a little short, 40 to 80 works best)" : n > 80 ? " (a little long, 40 to 80 works best)" : " (good length)"}`}
+              />
+            </Card>
+          );
+        })}
+        {d.items.length < 15 && <MiniButton onClick={() => set({ items: [...d.items, { q: "", a: "" }] })}>+ Add a question</MiniButton>}
+      </div>
+    </SectionShell>
+  );
+}

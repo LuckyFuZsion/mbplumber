@@ -1,17 +1,17 @@
 import Link from "next/link";
 import { phoneHref } from "@/lib/content";
-import { getContent } from "@/lib/content-server";
+import { getContent, getLastUpdated } from "@/lib/content-server";
 import { NAV, SITE } from "@/lib/site";
 import { MailIcon, PhoneIcon, PinIcon } from "./Icons";
 
 export async function Footer() {
-  const { business, services } = await getContent();
+  const [{ business, services }, updated] = await Promise.all([getContent(), getLastUpdated()]);
   return (
     <footer className="border-t-4 border-brand bg-black">
       <div className="mx-auto grid max-w-7xl gap-10 px-4 py-14 sm:px-6 md:grid-cols-4">
         <div className="md:col-span-1">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/logo.png" alt="" width={88} height={88} className="mb-4 h-20 w-20 rounded-full" />
+          <img src="/logo.png" alt="MB Plumber logo" width={88} height={88} className="mb-4 h-20 w-20 rounded-full" />
           <p className="text-sm font-semibold leading-relaxed text-white/70">{business.tagline}</p>
         </div>
 
@@ -62,6 +62,13 @@ export async function Footer() {
       </div>
       <div className="border-t border-white/10 py-5 text-center text-xs font-semibold text-white/50">
         © {new Date().getFullYear()} {SITE.name}. All rights reserved.
+        <span className="mx-2">·</span>
+        <a href={SITE.social[0]} target="_blank" rel="noopener noreferrer" className="hover:text-brand">
+          Facebook
+        </a>
+        <span className="mx-2">·</span>
+        Site last updated{" "}
+        <time dateTime={updated}>{new Date(updated).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })}</time>
       </div>
     </footer>
   );

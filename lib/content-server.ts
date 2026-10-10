@@ -36,6 +36,24 @@ function pickValid(data: Record<string, unknown>): Partial<SiteContent> {
 
 const cachedOverrides = unstable_cache(readOverrides, ["site-content-v1"], { tags: [TAG], revalidate: 300 });
 
+/** The site went live on this date; used until the owner makes their first edit. */
+const LAUNCH_ISO = "2026-10-10T00:00:00.000Z";
+
+async function readUpdated(): Promise<string> {
+  if (!firebaseConfigured()) return LAUNCH_ISO;
+  try {
+    const snap = await adminDb().collection(COL).doc(DOC).get();
+    return snap.updateTime?.toDate().toISOString() ?? LAUNCH_ISO;
+  } catch {
+    return LAUNCH_ISO;
+  }
+}
+const cachedUpdated = unstable_cache(readUpdated, ["site-updated-v1"], { tags: [TAG], revalidate: 300 });
+
+/** When the content was last edited (ISO). Used for sitemap, "last updated" and structured data. */
+export const getLastUpdated = () => cachedUpdated();
+export { LAUNCH_ISO };
+
 /** Site content for public pages: the original defaults with any owner edits layered on top. */
 export async function getContent(): Promise<SiteContent> {
   return { ...DEFAULT_CONTENT, ...(await cachedOverrides()) };

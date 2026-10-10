@@ -140,6 +140,11 @@ const SECTIONS: { [K in SectionKey]: (a: SiteContent[K], b: SiteContent[K]) => s
 
   contact: (a, b) => scalars(a, b, { title: "Heading", intro: "Intro" }),
   cta: (a, b) => scalars(a, b, { heading: "Heading", text: "Text" }),
+
+  faq: (a, b) => [
+    ...scalars(a, b, { heading: "Section heading" }),
+    ...list(a.items, b.items, (f) => f.q, (f) => f.q, "question", (x, y) => scalars(x, y, { a: "Answer" })),
+  ],
 };
 
 const MAX_LINES = 60;

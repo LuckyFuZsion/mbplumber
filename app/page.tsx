@@ -2,15 +2,43 @@ import Link from "next/link";
 import { CtaBand } from "@/components/Bits";
 import { CheckIcon, PhoneIcon, ServiceIcon, ShieldIcon } from "@/components/Icons";
 import { phoneHref } from "@/lib/content";
-import { getContent } from "@/lib/content-server";
+import { getContent, getLastUpdated } from "@/lib/content-server";
+import { SITE } from "@/lib/site";
 import { projectCover } from "@/lib/projects";
 
 export default async function Home() {
-  const { business, home, services, projects } = await getContent();
+  const { business, home, services, projects, faq } = await getContent();
+  const updated = await getLastUpdated();
   const heroImage = projects.items[0] && projectCover(projects.items[0]);
   const whyImage = (projects.items[1] && projectCover(projects.items[1])) || heroImage;
+  const pageLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebPage",
+        "@id": `${SITE.url}/#webpage`,
+        url: SITE.url,
+        name: `${SITE.name} | ${home.title}`,
+        isPartOf: { "@id": `${SITE.url}/#business` },
+        about: { "@id": `${SITE.url}/#business` },
+        datePublished: "2026-10-10",
+        dateModified: updated,
+        // Marks the headline and the FAQ answers as the parts suited to being read aloud by voice assistants.
+        speakable: { "@type": "SpeakableSpecification", cssSelector: ["h1", ".faq-answer"] },
+      },
+      ...(faq.items.length
+        ? [
+            {
+              "@type": "FAQPage",
+              mainEntity: faq.items.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })),
+            },
+          ]
+        : []),
+    ],
+  };
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(pageLd) }} />
       {/* HERO */}
       <section className="relative overflow-hidden border-b border-white/10 bg-ink-soft">
         <div className="relative mx-auto grid max-w-7xl items-center gap-12 px-4 py-16 sm:px-6 lg:grid-cols-[1fr_1fr] lg:py-24">
@@ -37,7 +65,7 @@ export default async function Home() {
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={heroImage.file}
-                alt={heroImage.alt}
+                alt={heroImage.alt || "Completed bathroom by MB Plumber"}
                 width={heroImage.width}
                 height={heroImage.height}
                 className="aspect-[4/3] w-full rounded-2xl border border-white/10 object-cover"
@@ -80,7 +108,7 @@ export default async function Home() {
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={c.file}
-                    alt={c.alt}
+                    alt={c.alt || `${p.title}, completed bathroom project by MB Plumber`}
                     width={c.width}
                     height={c.height}
                     loading="lazy"
@@ -127,7 +155,7 @@ export default async function Home() {
           {whyImage && (
             <div className="relative">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={whyImage.file} alt={whyImage.alt} className="relative aspect-[4/3] w-full rounded-3xl object-cover" />
+              <img src={whyImage.file} alt={whyImage.alt || "Completed bathroom by MB Plumber"} className="relative aspect-[4/3] w-full rounded-3xl object-cover" />
             </div>
           )}
           <div>
@@ -157,6 +185,28 @@ export default async function Home() {
           </div>
         </div>
       </section>
+
+      {/* FAQ */}
+      {faq.items.length > 0 && (
+        <section className="mx-auto max-w-4xl px-4 py-20 sm:px-6">
+          <h2 className="heading mb-10 text-3xl sm:text-4xl">{faq.heading}</h2>
+          <div className="divide-y divide-white/10 rounded-2xl border border-white/10 bg-ink-soft">
+            {faq.items.map((f) => (
+              <div key={f.q} className="p-6 sm:p-7">
+                <h3 className="text-lg font-bold">{f.q}</h3>
+                <p className="faq-answer mt-2 leading-relaxed text-white/70">{f.a}</p>
+              </div>
+            ))}
+          </div>
+          <p className="mt-5 text-sm text-white/55">
+            Gas work should always be carried out by a registered engineer. You can check any engineer on the{" "}
+            <a href="https://www.gassaferegister.co.uk/" target="_blank" rel="noopener noreferrer" className="font-semibold text-brand underline">
+              Gas Safe Register
+            </a>
+            .
+          </p>
+        </section>
+      )}
 
       <CtaBand />
     </>

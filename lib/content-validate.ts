@@ -129,6 +129,14 @@ export function sanitizeSection<K extends SectionKey>(key: K, value: unknown): S
       return { title: str(o.title, 160), intro: str(o.intro, 400) } as SiteContent[K];
     case "cta":
       return { heading: str(o.heading, 160), text: str(o.text, 300) } as SiteContent[K];
+    case "faq":
+      return {
+        heading: str(o.heading, 160),
+        items: list(o.items, 15, (x) => {
+          const f = obj(x);
+          return f && str(f.q, 200) && str(f.a, 900) ? { q: str(f.q, 200), a: str(f.a, 900) } : null;
+        }),
+      } as SiteContent[K];
     default:
       return null;
   }

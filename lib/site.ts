@@ -6,6 +6,8 @@ export const SITE = {
   email: "info@mbplumber.co.uk",
   yearsExperience: "20+",
   area: "Grantham & surrounding villages",
+  // Public profiles, used for the footer link and the business's structured data (sameAs).
+  social: ["https://www.facebook.com/MBPlumber/"],
   // Falls back to the Vercel production URL so share images work before the custom domain is connected.
   url:
     process.env.NEXT_PUBLIC_SITE_URL ??
