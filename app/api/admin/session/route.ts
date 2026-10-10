@@ -8,12 +8,13 @@ export async function POST(req: Request) {
   const { idToken } = (await req.json().catch(() => ({}))) as { idToken?: string };
   if (!idToken) return NextResponse.json({ error: "Missing token." }, { status: 400 });
   try {
-    const decoded = await adminAuth().verifyIdToken(idToken);
+    const auth = await adminAuth();
+    const decoded = await auth.verifyIdToken(idToken);
     const email = decoded.email?.toLowerCase();
     if (!email || !allowedAdminEmails().includes(email)) {
       return NextResponse.json({ error: "This account isn't allowed to edit the site." }, { status: 403 });
     }
-    const cookie = await adminAuth().createSessionCookie(idToken, { expiresIn: SESSION_MAX_AGE_MS });
+    const cookie = await auth.createSessionCookie(idToken, { expiresIn: SESSION_MAX_AGE_MS });
     const res = NextResponse.json({ ok: true });
     res.cookies.set(SESSION_COOKIE, cookie, {
       httpOnly: true,

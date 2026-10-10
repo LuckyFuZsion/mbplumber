@@ -11,7 +11,7 @@ export async function adminEmail(): Promise<string | null> {
   const cookie = (await cookies()).get(SESSION_COOKIE)?.value;
   if (!cookie) return null;
   try {
-    const decoded = await adminAuth().verifySessionCookie(cookie, true);
+    const decoded = await (await adminAuth()).verifySessionCookie(cookie, true);
     const email = decoded.email?.toLowerCase();
     return email && allowedAdminEmails().includes(email) ? email : null;
   } catch {

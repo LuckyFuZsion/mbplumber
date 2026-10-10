@@ -1,6 +1,5 @@
 import "server-only";
 import { cert, getApps, initializeApp, type App } from "firebase-admin/app";
-import { getAuth } from "firebase-admin/auth";
 import { getFirestore } from "firebase-admin/firestore";
 
 /**
@@ -32,7 +31,14 @@ function app(): App {
   return initializeApp({ credential: cert(creds) });
 }
 
-export const adminAuth = () => getAuth(app());
+/**
+ * Loaded lazily so public pages (which only read content) never import the auth library.
+ * A problem in sign-in code can then never take the public site down.
+ */
+export async function adminAuth() {
+  const { getAuth } = await import("firebase-admin/auth");
+  return getAuth(app());
+}
 export const adminDb = () => getFirestore(app());
 
 /** Comma-separated list of email addresses allowed into /admin. */
